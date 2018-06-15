@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "../Public/TankAIController.h"
+#include "../Public/Tank.h"
 
 ATank* ATankAIController::GetControlledTank()const {
 	return Cast<ATank>(GetPawn());
@@ -17,19 +18,30 @@ void ATankAIController::BeginPlay()
 	Super::BeginPlay();
 
 	//
-	auto controlledTank = GetPlayerTank();
+	ATank* playerTank = GetPlayerTank();
+	if (!playerTank) {
+		UE_LOG(LogTemp, Warning, TEXT("AI controller cant find player"));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("AI controller found player %s"), *playerTank->GetName());
+		m_PlayerTank = playerTank;
+	}
+
+	ATank* controlledTank = GetControlledTank();
 	if (!controlledTank) {
 		UE_LOG(LogTemp, Warning, TEXT("AI controller cant find player"));
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("AI controller found player %s"), *controlledTank->GetName());
+		m_ControlledTank = controlledTank;
 	}
-
 }
 
 void ATankAIController::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	//
-	UE_LOG(LogTemp, Warning, TEXT("AI controller is ticking"));
+	if (m_PlayerTank) {
+		m_ControlledTank->AimAt(m_PlayerTank->GetActorLocation());
+	}
 
 }

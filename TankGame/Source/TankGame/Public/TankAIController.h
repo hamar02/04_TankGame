@@ -2,15 +2,12 @@
 
 #pragma once
 
-#include "Tank.h"
 #include "Engine/World.h"
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-/**
- * 
- */
+class ATank;
 UCLASS()
 class TANKGAME_API ATankAIController : public AAIController
 {
@@ -24,6 +21,8 @@ public:
 
 	void Tick(float DeltaTime);
 
-	
-	
+private:
+	ATank * m_PlayerTank;
+	ATank * m_ControlledTank;
+
 };

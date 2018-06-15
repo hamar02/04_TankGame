@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "../Public/TankPlayerController.h"
+#include "../Public/Tank.h"
 
 ATank* ATankPlayerController::GetControlledTank()const {
 	return Cast<ATank>(GetPawn());
@@ -35,13 +36,33 @@ void ATankPlayerController::AimTowardsCrosshair()
 	FVector HitLocation;
 	if (GetSightRayHitLocation(HitLocation)) {
 		UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"),*HitLocation.ToString());
-
+		controlledTank->AimAt(HitLocation);
 	}
 
 }
 
 bool ATankPlayerController::GetSightRayHitLocation(OUT FVector& HitLocation)const {
 
-	HitLocation = FVector(1, 1, 1);
+	int32 ViewportSizeX, ViewportSizeY;
+	GetViewportSize(ViewportSizeX, ViewportSizeY);
+	auto ScreenLocation = FVector2D(ViewportSizeX*CrosshairXLocation, ViewportSizeY*CrosshairYLocation);
+
+	FVector CameraWorldLocation;
+	FVector LookDirection;
+	if (DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, LookDirection)) {
+		FHitResult hit;
+		auto startLocation = PlayerCameraManager->GetCameraLocation();
+		auto endLocation = startLocation + LookDirection * LineTraceRange;
+		if (GetWorld()->LineTraceSingleByChannel(hit, startLocation, endLocation, ECollisionChannel::ECC_Visibility)) {
+			HitLocation = hit.ImpactPoint;
+		}
+		else
+		{
+			HitLocation = FVector(0,0,0);
+		}
+	}
 	return true;
 }
+
+
+
