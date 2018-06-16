@@ -25,7 +25,7 @@ void ATankPlayerController::BeginPlay()
 void ATankPlayerController::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	//
-	UE_LOG(LogTemp, Warning, TEXT("Player controller is ticking"));
+	//UE_LOG(LogTemp, Warning, TEXT("Player controller is ticking"));
 	AimTowardsCrosshair();
 }
 

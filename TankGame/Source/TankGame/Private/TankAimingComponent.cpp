@@ -63,12 +63,12 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 		)
 	) {
 		FVector AimDirection = outLaunchVelocity.GetSafeNormal();
-		UE_LOG(LogTemp, Warning, TEXT("%s Aiming at %s from %s"), *GetOwner()->GetName(), *AimDirection.ToString(),*Barrel->GetComponentLocation().ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("%s Aiming at %s from %s"), *GetOwner()->GetName(), *AimDirection.ToString(),*Barrel->GetComponentLocation().ToString());
 		MoveBarrelTowards(AimDirection);
 		MoveTurretTowards(AimDirection);
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("%s Aiming at NO SOLUTION"), *GetOwner()->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("%s Aiming at NO SOLUTION"), *GetOwner()->GetName());
 
 	}
 }
