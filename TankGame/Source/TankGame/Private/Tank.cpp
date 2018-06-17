@@ -4,7 +4,7 @@
 #include "../Public/Projectile.h"
 #include "../Public/TankBarrel.h"
 #include "../Public/TankAimingComponent.h"
-
+#include "../Public/TankMovementComponent.h"
 
 // Sets default values
 ATank::ATank()
@@ -13,6 +13,7 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 	//
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
+
 }
 
 void ATank::AimAt(FVector HitLocation)

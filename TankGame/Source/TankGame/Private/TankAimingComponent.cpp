@@ -68,7 +68,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 		MoveTurretTowards(AimDirection);
 	}
 	else {
-		//UE_LOG(LogTemp, Warning, TEXT("%s Aiming at NO SOLUTION"), *GetOwner()->GetName());
 
 	}
 }
