@@ -7,23 +7,24 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-class ATank;
+class UTankAimingComponent;
+
 UCLASS()
 class TANKGAME_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
 
 public:
-	ATank * GetControlledTank() const;
-	ATank * GetPlayerTank() const;
+	APawn * GetControlledTank() const;
+	APawn * GetPlayerTank() const;
 
 	void BeginPlay() override;
 
 	void Tick(float DeltaTime);
 
 private:
-	ATank * m_PlayerTank;
-	ATank * m_ControlledTank;
+	APawn * m_PlayerTank;
+	APawn * m_ControlledTank;
 
 	float AcceptanceRadius = 3000;
 };

@@ -4,6 +4,12 @@
 #include "../Public/TankBarrel.h"
 #include "../Public/TankTurret.h"
 
+
+void UTankAimingComponent::Initialise(UTankBarrel* Barrel, UTankTurret* Turret) {
+	this->Barrel = Barrel;
+	this->Turret = Turret;
+}
+
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
@@ -15,15 +21,7 @@ UTankAimingComponent::UTankAimingComponent()
 }
 
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
-{
-	Barrel = BarrelToSet;
-}
 
-void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet)
-{
-	Turret = TurretToSet;
-}
 
 // Called when the game starts
 void UTankAimingComponent::BeginPlay()
@@ -43,9 +41,9 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
+void UTankAimingComponent::AimAt(FVector HitLocation) {
 
-	if (!Barrel || !Turret) { return; }
+	if (!ensure(Barrel) || !ensure(Turret)) { return; }
 	
 	FVector outLaunchVelocity;
 	FVector startLocation = Barrel->GetSocketLocation("FirePoint");
@@ -63,16 +61,14 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 		)
 	) {
 		FVector AimDirection = outLaunchVelocity.GetSafeNormal();
-		//UE_LOG(LogTemp, Warning, TEXT("%s Aiming at %s from %s"), *GetOwner()->GetName(), *AimDirection.ToString(),*Barrel->GetComponentLocation().ToString());
 		MoveBarrelTowards(AimDirection);
 		MoveTurretTowards(AimDirection);
 	}
-	else {
 
-	}
 }
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) {
+	if (!ensure(Barrel ) || !ensure(Turret)) { return; }
 	FRotator BarrelRotator = Barrel->GetForwardVector().Rotation();
 	FRotator AimRotator = AimDirection.Rotation();
 	FRotator DeltaRotator = AimRotator - BarrelRotator;

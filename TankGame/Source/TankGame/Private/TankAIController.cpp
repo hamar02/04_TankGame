@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "../Public/TankAIController.h"
-#include "../Public/Tank.h"
+#include "../Public/TankAimingComponent.h"
 
-ATank* ATankAIController::GetControlledTank()const {
-	return Cast<ATank>(GetPawn());
+APawn* ATankAIController::GetControlledTank()const {
+	return GetPawn();
 }
 
-ATank * ATankAIController::GetPlayerTank() const
+APawn * ATankAIController::GetPlayerTank() const
 {
 	auto playerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	return Cast<ATank>(playerPawn);
+	return (playerPawn);
 }
 
 void ATankAIController::BeginPlay()
@@ -18,21 +18,19 @@ void ATankAIController::BeginPlay()
 	Super::BeginPlay();
 
 	//
-	ATank* playerTank = GetPlayerTank();
+	APawn* playerTank = GetPlayerTank();
 	if (!playerTank) {
 		UE_LOG(LogTemp, Warning, TEXT("AI controller cant find player"));
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("AI controller found player %s"), *playerTank->GetName());
 		m_PlayerTank = playerTank;
 	}
 
-	ATank* controlledTank = GetControlledTank();
+	APawn* controlledTank = GetControlledTank();
 	if (!controlledTank) {
 		UE_LOG(LogTemp, Warning, TEXT("AI controller cant find player"));
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("AI controller found player %s"), *controlledTank->GetName());
 		m_ControlledTank = controlledTank;
 	}
 }
@@ -40,10 +38,14 @@ void ATankAIController::BeginPlay()
 void ATankAIController::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	//
-	if (m_PlayerTank) {
-		MoveToActor(m_PlayerTank, AcceptanceRadius);
-		m_ControlledTank->AimAt(m_PlayerTank->GetActorLocation());
-		m_ControlledTank->Fire();
+	if (!ensure(m_PlayerTank && m_ControlledTank)) {
+		return;
 	}
 
+	MoveToActor(m_PlayerTank, AcceptanceRadius);
+
+	UTankAimingComponent* aimingComponent = m_ControlledTank->FindComponentByClass<UTankAimingComponent>();
+	aimingComponent->AimAt(m_PlayerTank->GetActorLocation());
+	//aimingComponent->Fire();
+	
 }

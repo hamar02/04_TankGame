@@ -4,18 +4,23 @@
 #define OUT
 #include"Engine/World.h"
 #include "CoreMinimal.h"
+#include"GameFramework/Actor.h"
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
-class ATank;
+class UTankAimingComponent;
+
 UCLASS()
 class TANKGAME_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+protected:
+	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
+		void FoundAimingComponent(UTankAimingComponent * AimingComponentRef);
 	
-
 private:
-	ATank * controlledTank;
+	UTankAimingComponent * aimingComponent=nullptr;
+
 	UPROPERTY(EditAnywhere)
 		float CrosshairXLocation = 0.5;
 	UPROPERTY(EditAnywhere)
@@ -23,12 +28,12 @@ private:
 	UPROPERTY(EditAnywhere)
 		float LineTraceRange= 1000000;
 
+		
 
 	void BeginPlay() override;
 	void Tick(float DeltaTime);
 
 	void AimTowardsCrosshair();
-	ATank * GetControlledTank() const;
 	bool GetSightRayHitLocation(OUT FVector& HitLocation) const;
 
 
