@@ -24,10 +24,13 @@ void ATankPlayerController::Tick(float DeltaTime) {
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
+	if (!GetPawn()) { return; }
+
 	if (!ensure(aimingComponent)) { return; }
 
 	FVector HitLocation;
-	if (GetSightRayHitLocation(HitLocation)) {
+	bool bGotHitLocation = GetSightRayHitLocation(HitLocation);
+	if (bGotHitLocation) {
 		aimingComponent->AimAt(HitLocation);
 	}
 
@@ -45,15 +48,17 @@ bool ATankPlayerController::GetSightRayHitLocation(OUT FVector& HitLocation)cons
 		FHitResult hit;
 		auto startLocation = PlayerCameraManager->GetCameraLocation();
 		auto endLocation = startLocation + LookDirection * LineTraceRange;
-		if (GetWorld()->LineTraceSingleByChannel(hit, startLocation, endLocation, ECollisionChannel::ECC_Visibility)) {
+		bool bVectorHit = GetWorld()->LineTraceSingleByChannel(hit, startLocation, endLocation, ECollisionChannel::ECC_Visibility);
+		if (bVectorHit) {
 			HitLocation = hit.ImpactPoint;
+			return true;
 		}
 		else
 		{
 			HitLocation = FVector(0,0,0);
 		}
 	}
-	return true;
+	return false;
 }
 
 

@@ -3,6 +3,7 @@
 #include "../Public/TankAimingComponent.h"
 #include "../Public/TankBarrel.h"
 #include "../Public/TankTurret.h"
+#include "../Public/Projectile.h"
 
 
 void UTankAimingComponent::Initialise(UTankBarrel* Barrel, UTankTurret* Turret) {
@@ -29,7 +30,7 @@ void UTankAimingComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 }
 
 
@@ -39,6 +40,33 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTime){
+		firingState = EFiringStates::Reloading;
+	}
+	else if (IsBarrelMoving()) {
+		firingState = EFiringStates::Aiming;
+	}
+	else if (Rounds <= 0) {
+		firingState = EFiringStates::OutOfAmmo;
+		Rounds = 0;
+	}
+	else {
+		firingState = EFiringStates::Locked;
+	}
+}
+
+void UTankAimingComponent::Fire()
+{
+	if (!ensure(Barrel && ProjectileBP)) { return; }
+
+	
+
+	if (firingState == EFiringStates::Locked || firingState == EFiringStates::Aiming) {
+		AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, Barrel->GetSocketLocation("FirePoint"), Barrel->GetSocketRotation("FirePoint"));
+		Projectile->Launch(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+		Rounds--;
+	}
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation) {
@@ -60,7 +88,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation) {
 		ESuggestProjVelocityTraceOption::DoNotTrace
 		)
 	) {
-		FVector AimDirection = outLaunchVelocity.GetSafeNormal();
+		AimDirection = outLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
 		MoveTurretTowards(AimDirection);
 	}
@@ -83,6 +111,33 @@ void UTankAimingComponent::MoveTurretTowards(FVector AimDirection)
 	FRotator AimRotator = AimDirection.Rotation();
 	FRotator DeltaRotator = AimRotator - TurretRotator;
 
-	Turret->Rotate(DeltaRotator.Yaw);
+	if (FMath::Abs(DeltaRotator.Yaw) < 180) {
+		Turret->Rotate(DeltaRotator.Yaw);
+
+	}
+	else
+	{
+		Turret->Rotate(-DeltaRotator.Yaw);
+
+	}
+}
+
+EFiringStates UTankAimingComponent::GetFiringState() const
+{
+	return firingState;
+}
+
+int UTankAimingComponent::GetRoundsLeft() const
+{
+	return Rounds;
+}
+
+bool UTankAimingComponent::IsBarrelMoving()
+{
+	if (!ensure(Barrel)) { return false; }
+
+	FVector forward = Barrel->GetForwardVector();
+
+	return !forward.Equals(AimDirection, 0.1f);
 }
 

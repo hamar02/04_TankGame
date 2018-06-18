@@ -26,5 +26,7 @@ private:
 	APawn * m_PlayerTank;
 	APawn * m_ControlledTank;
 
+protected:
+	UPROPERTY(EditAnywhere, Category="Setup")
 	float AcceptanceRadius = 3000;
 };

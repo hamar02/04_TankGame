@@ -20,4 +20,19 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 		float TrackMaxDrivingForce = 400000;
+
+private:
+	UTracks();
+
+
+	void ApplySidewayForce();
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void BeginPlay() override;
+
+	void DriveTank();
+
+
+	float currentThrottle = 0;
 };
