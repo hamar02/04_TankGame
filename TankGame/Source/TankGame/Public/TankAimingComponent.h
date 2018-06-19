@@ -71,6 +71,7 @@ private:
 
 	float LastFireTime = 0;
 
-	float Rounds = 5;
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	int32 Rounds = 5;
 	bool IsBarrelMoving();
 };

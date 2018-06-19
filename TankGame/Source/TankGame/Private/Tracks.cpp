@@ -21,7 +21,6 @@ void UTracks::ApplySidewayForce()
 
 void UTracks::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HIT"));
 	ApplySidewayForce();
 	DriveTank();
 	currentThrottle = 0;

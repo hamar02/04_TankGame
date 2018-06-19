@@ -28,7 +28,8 @@ private:
 	UPROPERTY(EditAnywhere)
 		float LineTraceRange= 1000000;
 
-		
+	virtual void SetPawn(APawn* InPawn)override;
+
 
 	void BeginPlay() override;
 	void Tick(float DeltaTime);
@@ -37,5 +38,6 @@ private:
 	bool GetSightRayHitLocation(OUT FVector& HitLocation) const;
 
 
-
+	UFUNCTION()
+		void OnPossesedTankDeath();
 };

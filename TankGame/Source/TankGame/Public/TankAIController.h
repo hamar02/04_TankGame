@@ -26,6 +26,11 @@ private:
 	APawn * m_PlayerTank;
 	APawn * m_ControlledTank;
 
+	virtual void SetPawn(APawn* InPawn)override;
+
+
+	UFUNCTION()
+		void OnPossesedTankDeath();
 protected:
 	UPROPERTY(EditAnywhere, Category="Setup")
 	float AcceptanceRadius = 3000;

@@ -40,15 +40,15 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTime){
-		firingState = EFiringStates::Reloading;
+	if (Rounds <= 0) {
+		firingState = EFiringStates::OutOfAmmo;
+		Rounds = 0;
 	}
 	else if (IsBarrelMoving()) {
 		firingState = EFiringStates::Aiming;
 	}
-	else if (Rounds <= 0) {
-		firingState = EFiringStates::OutOfAmmo;
-		Rounds = 0;
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTime) {
+			firingState = EFiringStates::Reloading;
 	}
 	else {
 		firingState = EFiringStates::Locked;
